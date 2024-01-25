@@ -128,4 +128,4 @@ def update_chart(metal, start_date, end_date):
 if __name__ == "__main__":
     #app.run_server(debug=True, use_reloader=False)
 
-    app.run_server(debug=False)
+    app.run_server(debug=False,port=80)
