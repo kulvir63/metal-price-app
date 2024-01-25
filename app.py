@@ -126,4 +126,5 @@ def update_chart(metal, start_date, end_date):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True)
+    #app.run_server(debug=True)
