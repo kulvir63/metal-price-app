@@ -1,7 +1,5 @@
 import streamlit as st
-from streamlit_dashboards import st_decks
-import dash
-import dash_html_components as html
+from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 import plotly.express as px
 import pandas as pd
@@ -11,7 +9,7 @@ data = pd.read_csv("precious_metals_prices_2018_2021.csv")
 data['DateTime'] = pd.to_datetime(data['DateTime'], format="%Y-%m-%d %H:%M:%S", errors='coerce')
 
 # Dash app
-dash_app = dash.Dash(__name__)
+dash_app = Dash(__name__)
 dash_app.title = "Precious Metal Prices 2018-2021"
 
 # Dash layout
@@ -51,8 +49,8 @@ def update_chart(metal, start_date, end_date):
 # Streamlit app
 st.title("Streamlit Dash App")
 
-# Embed the Dash app in Streamlit
-st_decks([dash_app])
+# Embed the Dash app in Streamlit using st_iframe
+st_iframe(dash_app.url_base, height=800)
 
 if __name__ == '__main__':
     st.run(dash_app)
