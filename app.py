@@ -1,3 +1,4 @@
+import streamlit as st
 import dash
 from dash import dcc
 from dash import html
@@ -20,7 +21,7 @@ fig = px.line(
 
 app = dash.Dash(__name__)
 app.title = "Precious Metal Prices 2018-2021"
-server = app.server
+#server = app.server
 
 app.layout = html.Div(
     id="app-container",
@@ -125,8 +126,9 @@ def update_chart(metal, start_date, end_date):
     return fig
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
     #app.run_server(debug=True, use_reloader=False)
 
     
-    app.run_server(debug=True)
+    
+    #app.run_server(debug=True)
