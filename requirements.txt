@@ -1,4 +1,4 @@
-dash-design-kit
+
 ansi2html==1.9.1
 blinker==1.7.0
 certifi==2023.11.17
