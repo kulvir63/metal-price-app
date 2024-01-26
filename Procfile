@@ -1,1 +1,1 @@
-web: streamlit run app.py
+web: gunicorn app:server --workers 2
