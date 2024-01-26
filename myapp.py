@@ -17,7 +17,7 @@ fig = px.line(
     color_discrete_map={"Gold": "gold"}
 )
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, suppress_callback_exceptions=True)  # Set suppress_callback_exceptions=True
 app.title = "Precious Metal Prices 2018-2021"
 server = app.server
 
@@ -123,8 +123,4 @@ def update_chart(metal, start_date, end_date):
     return fig
 
 if __name__ == '__main__':
-    # For Gunicorn compatibility, the app should be callable as a function
-    def run():
-        app.run_server(debug=True)
-
-    run()
+    app.run_server(debug=True)
