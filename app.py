@@ -1,15 +1,15 @@
 import streamlit as st
 import dash
-from dash import dcc
-from dash import html
+from dash import dcc, html
 from dash.dependencies import Output, Input
 import plotly.express as px
 import pandas as pd
+import multiprocessing
 
 # Read in the data
 data = pd.read_csv("precious_metals_prices_2018_2021.csv")
-#data["DateTime"] = pd.to_datetime(data["DateTime"], format="%Y-%m-%d")
 data['DateTime'] = pd.to_datetime(data['DateTime'], format="%Y-%m-%d %H:%M:%S", errors='coerce')
+
 # Create a plotly plot for use by dcc.Graph().
 fig = px.line(
     data,
@@ -19,11 +19,10 @@ fig = px.line(
     color_discrete_map={"Gold": "gold"}
 )
 
-app = dash.Dash(__name__)
-app.title = "Precious Metal Prices 2018-2021"
-server = app.server
-
-app.layout = html.Div(
+# Define a Dash app
+dash_app = dash.Dash(__name__)
+dash_app.title = "Precious Metal Prices 2018-2021"
+dash_app.layout = html.Div(
     id="app-container",
     children=[
         html.Div(
@@ -32,7 +31,6 @@ app.layout = html.Div(
                 html.H1(
                     id="header-title",
                     children="Precious Metal Prices",
-
                 ),
                 html.P(
                     id="header-description",
@@ -86,8 +84,7 @@ app.layout = html.Div(
     ]
 )
 
-
-@app.callback(
+@dash_app.callback(
     Output("price-chart", "figure"),
     Input("metal-filter", "value"),
     Input("date-range", "start_date"),
@@ -96,34 +93,26 @@ app.layout = html.Div(
 def update_chart(metal, start_date, end_date):
     filtered_data = data.loc[(data.DateTime >= start_date) & (data.DateTime <= end_date)]
     # Create a plotly plot for use by dcc.Graph().
-    fig = px.line(
+    updated_fig = px.line(
         filtered_data,
         title="Precious Metal Prices 2018-2021",
         x="DateTime",
         y=[metal],
-        color_discrete_map={
-            "Platinum": "#E5E4E2",
-            "Gold": "gold",
-            "Silver": "silver",
-            "Palladium": "#CED0DD",
-            "Rhodium": "#E2E7E1",
-            "Iridium": "#3D3C3A",
-            "Ruthenium": "#C9CBC8"
-        }
+        color_discrete_map={"Gold": "gold"}
     )
+    return updated_fig
 
-    fig.update_layout(
-        template="plotly_dark",
-        xaxis_title="Date",
-        yaxis_title="Price (USD/oz)",
-        font=dict(
-            family="Verdana, sans-serif",
-            size=18,
-            color="white"
-        ),
-    )
+# Function to run Dash app
+def run_dash():
+    dash_app.run_server(debug=True, use_reloader=False)
 
-    return fig
+# Run Streamlit app
+st.title("Streamlit App")
+st.write("This is a Streamlit app.")
 
+# Run Dash app in a separate process
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    dash_process = multiprocessing.Process(target=run_dash)
+    dash_process.start()
+    st.write("Dash app is running in a separate process.")
+
