@@ -123,7 +123,31 @@ def update_chart(metal, start_date, end_date):
     )
 
     return fig
+def create_dash_app():
+    return app
 
+# Run Dash app with Gunicorn
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    from gunicorn.app.base import BaseApplication
 
+    class GunicornApp(BaseApplication):
+        def __init__(self, app, options=None):
+            self.options = options or {}
+            self.application = app
+            super().__init__()
+
+        def load_config(self):
+            config = {key: value for key, value in self.options.items()
+                      if key in self.cfg.settings and value is not None}
+            for key, value in config.items():
+                self.cfg.set(key.lower(), value)
+
+        def load(self):
+            return self.application
+
+    options = {
+        'bind': '0.0.0.0:8050',
+        'workers': 4,  # Adjust as needed
+    }
+
+    GunicornApp(create_dash_app(), options).run()
