@@ -20,7 +20,7 @@ fig = px.line(
 
 app = dash.Dash(__name__)
 app.title = "Precious Metal Prices 2018-2021"
-#server = app.server
+server = app.server
 
 app.layout = html.Div(
     id="app-container",
@@ -129,4 +129,4 @@ if __name__ == "__main__":
     #app.run_server(debug=True, use_reloader=False)
 
     
-    app.run(debug=True, port=8080)
+    app.run(debug=True)
